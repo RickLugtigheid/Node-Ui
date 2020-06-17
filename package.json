@@ -1,0 +1,16 @@
+{
+  "name": "node_ui",
+  "version": "1.0.0",
+  "description": "A python based GUI builder",
+  "main": "index.js",
+  "directories": {
+    "lib": "lib"
+  },
+  "keywords": [
+    "gui",
+    "node ui",
+    "ui"
+  ],
+  "author": "Rick Lugtigheid",
+  "license": "ISC"
+}

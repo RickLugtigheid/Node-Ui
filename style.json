@@ -1,0 +1,9 @@
+{
+    "window":{
+        "bg-color":  [100, 0, 100]
+    },
+    "button":{
+        "bg-color": ["default"],
+        "text-color": [255, 0, 0]
+    }
+}
