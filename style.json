@@ -1,4 +1,5 @@
 {
+    "note": "this is an example style sheet (so my idea of how it will be)",
     "window":{
         "bg-color":  [100, 0, 100]
     },

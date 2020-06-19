@@ -1,5 +1,6 @@
 # ====================== imports =========================
 from tkinter import *
+from tkinter import ttk
 import sys
 import json
 from functools import partial
@@ -19,7 +20,6 @@ elements = json.loads(sys.argv[1])
 window_settings = elements[0] # the fist element is always the window
 #delete the window from the elements
 elements.pop(0)
-print(elements)
 class window:
     def __init__(self):
         self.root = Tk()
@@ -46,20 +46,31 @@ class window:
 
             btn['command'] = partial(self.onClick, obj)
 
-            btn.place(x=obj['x'] - (obj['width'] * 5),y=obj['y'] - (obj['height'] * 5)) # pos - tranform so it will be for example right in the center
+            btn.place(x=obj['x'], y=obj['y'], anchor="center")
         
         def label(obj):
             lbl = Label()
             lbl['text'] = obj['text']
             lbl['width'] = obj['width']
             lbl['height'] = obj['height']
-            lbl.place(x=obj['x'] - (obj['width'] * 5),y=obj['y'] - (obj['height'] * 5)) # pos - tranform so it will be for example right in the center
+            lbl.place(x=obj['x'], y=obj['y'], anchor="center")
+        
+        def combo_box(obj):
+            box = ttk.Combobox(self.root)
+            box['values'] = obj['values']
+            box['width'] = obj['width']
+            box['height'] = obj['height']
+
+            box.bind('<<ComboboxSelected>>', partial(self.onSelect, obj))
+            box.current(obj['default'])
+            box.place(x=obj['x'], y=obj['y'], anchor="center")
     
     # ================== object constructor ===================
         for obj in elements:
             types = {
                 'button': button,
-                'label': label
+                'label': label,
+                'combobox': combo_box
             }
             print(obj)
             print(obj['tag'])
@@ -72,6 +83,9 @@ class window:
     # ==================== event functions ====================
     def onClick(self, obj):
         print(obj['id'])
+    def onSelect(self, obj, event=None):
+        if event:
+            print(f"{obj['id']}<{event.widget.get()}>")
 
 
 #© Copyright Rick Lugtigheid

@@ -1,8 +1,8 @@
 {
   "name": "node_ui",
-  "version": "1.0.0",
+  "version": "0.0.1",
   "description": "A python based GUI builder",
-  "main": "index.js",
+  "main": "./lib/nodeUi.js",
   "directories": {
     "lib": "lib"
   },
@@ -11,6 +11,11 @@
     "node ui",
     "ui"
   ],
-  "author": "Rick Lugtigheid",
+  "author": "Rick Lugtgheid",
+  "homepage": "https://github.com/RickLugtigheid/Node-Ui",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/RickLugtigheid/Node-Ui.git"
+  },
   "license": "ISC"
 }
