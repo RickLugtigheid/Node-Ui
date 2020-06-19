@@ -1,5 +1,5 @@
 {
-  "name": "node_ui",
+  "name": "node_ui.build",
   "version": "0.0.1",
   "description": "A python based GUI builder",
   "main": "./lib/nodeUi.js",
