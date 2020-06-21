@@ -1,10 +1,17 @@
 {
-    "note": "this is an example style sheet (so my idea of how it will be)",
     "window":{
-        "bg-color":  [100, 0, 100]
+        "bg-color":  "#1F1F1F"
     },
     "button":{
-        "bg-color": ["default"],
-        "text-color": [255, 0, 0]
+        "bg-color": "#242424",
+        "text-color": "white"
+    },
+    "label":{
+        "bg-color": "#1F1F1F",
+        "text-color": "white"
+    },
+    "checkbox":{
+        "bg-color": "#1F1F1F",
+        "text-color": "#29FF00"
     }
 }

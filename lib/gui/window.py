@@ -15,8 +15,9 @@ if sys.version_info[0] == 3:
 sys.stdout = os.fdopen(sys.stdout.fileno(), 'a+', buf_arg)
 sys.stderr = os.fdopen(sys.stderr.fileno(), 'a+', buf_arg)
 # =========================================================
-
 elements = json.loads(sys.argv[1])
+keyBinds = json.loads(sys.argv[2])
+style = json.loads(sys.argv[3])
 window_settings = elements[0] # the fist element is always the window
 #delete the window from the elements
 elements.pop(0)
@@ -24,18 +25,14 @@ class window:
     def __init__(self):
         self.root = Tk()
         # ====== windows settings =======
+        try:
+            self.root.configure(bg=style['window']['bg-color'])
+            self.root.iconbitmap(style['window']['icon'])
+        except:
+            print('')
         self.root.title(window_settings['title'])
         transform = f"{window_settings['width']}x{window_settings['height']}"
-        print(transform)
         self.root.geometry(transform)
-        # self.root.minsize(width=window_settings['width'], height=window_settings['height'])
-    
-    #def init_settings(self):
-        # fullscreen
-        # self.root.attributes('-fullscreen', False)
-        # self.fullScreenState = False
-        # self.root.bind("<F11>", self.toggleFullScreen)
-        # self.root.bind("<Escape>", self.quitFullScreen)
 
     # =================== element functions ===================
         def button(obj):
@@ -45,14 +42,42 @@ class window:
             btn['text'] = obj['name']
 
             btn['command'] = partial(self.onClick, obj)
+            #style
+            try:
+                btn['bg'] = style['button']['bg-color']
+                btn['fg'] = style['button']['text-color']
+            except:
+                print('')
 
             btn.place(x=obj['x'], y=obj['y'], anchor="center")
+        
+        def checkbox(obj):
+            state = IntVar()
+            box = Checkbutton(self.root, text=obj['name'], height=obj['height'], variable=state)
+            box['command'] = partial(self.onClick, obj, state)
+
+            #style
+            try:
+                box['bg'] = style['checkbox']['bg-color']
+                box['fg'] = style['checkbox']['text-color']
+            except:
+                print('')
+
+            box.place(x=obj['x'], y=obj['y'], anchor="center")
         
         def label(obj):
             lbl = Label()
             lbl['text'] = obj['text']
             lbl['width'] = obj['width']
             lbl['height'] = obj['height']
+
+            #style
+            try:
+                lbl['bg'] = style['label']['bg-color']
+                lbl['fg'] = style['label']['text-color']
+            except:
+                print('')
+
             lbl.place(x=obj['x'], y=obj['y'], anchor="center")
         
         def combo_box(obj):
@@ -69,23 +94,32 @@ class window:
         for obj in elements:
             types = {
                 'button': button,
+                'checkbox': checkbox,
                 'label': label,
                 'combobox': combo_box
             }
-            print(obj)
-            print(obj['tag'])
             # look at the objects type
             create = types.get(obj['tag'])
             create(obj)
+        
+    # ====================== bind keys ========================
+        for key in keyBinds:
+            self.root.bind(key['key'], partial(self.onKeyPress, key))
+
         # start the main loop
         self.root.mainloop()
     
     # ==================== event functions ====================
-    def onClick(self, obj):
+    def onClick(self, obj, extra = None):
+        if extra:
+            print(f"{obj['id']}<{extra.get()}>")
+
         print(obj['id'])
     def onSelect(self, obj, event=None):
         if event:
             print(f"{obj['id']}<{event.widget.get()}>")
+    def onKeyPress(self, key, event):
+         print(f"{key['id']}<{event.keysym}>")
 
 
 #© Copyright Rick Lugtigheid
