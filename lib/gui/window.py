@@ -35,8 +35,8 @@ class window:
         self.root.geometry(transform)
 
     # =================== element functions ===================
-        def button(obj):
-            btn = Button()
+        def button(obj, master):
+            btn = Button(master)
             btn['width'] = obj['width']
             btn['height'] = obj['height']
             btn['text'] = obj['name']
@@ -44,44 +44,91 @@ class window:
             btn['command'] = partial(self.onClick, obj)
             #style
             try:
-                btn['bg'] = style['button']['bg-color']
-                btn['fg'] = style['button']['text-color']
+                btn_style = style['button']
+                if('button' in style):
+                    btn['bg'] = btn_style['bg-color']
+                    btn['fg'] = btn_style['text-color']
+
+                if('button-active' in style):
+                    btn['activebackground'] = style['button-active']['bg-color']
+                    btn['activeforeground'] = style['button-active']['text-color']
+                
+                
+                if('button-hover' in style):
+                    hover = style['button-hover']
+                    btn.bind("<Enter>", partial(self.hoverEvent, btn, [hover['bg-color'], hover['text-color']]))
+                    btn.bind("<Leave>", partial(self.hoverEvent, btn, [btn_style['bg-color'], btn_style['text-color']]))
+
+                if('font' in btn_style):
+                    font = btn_style['font']
+                    btn.config(font=(font['font'], font['font-size']))
+                    btn.config(font=(font['font'], font['font-size'], font['font-style']))
             except:
                 print('')
 
             btn.place(x=obj['x'], y=obj['y'], anchor="center")
         
-        def checkbox(obj):
+        def checkbox(obj, master):
             state = IntVar()
-            box = Checkbutton(self.root, text=obj['name'], height=obj['height'], variable=state)
+            box = Checkbutton(master, text=obj['name'], height=obj['height'], variable=state)
             box['command'] = partial(self.onClick, obj, state)
 
             #style
             try:
-                box['bg'] = style['checkbox']['bg-color']
-                box['fg'] = style['checkbox']['text-color']
+                cbox_style = style['checkbox']
+                if('checkbox' in style):
+                    box['bg'] = cbox_style['bg-color']
+                    box['fg'] = cbox_style['text-color']
+
+                if('checkbox-active' in style):
+                    box['activebackground'] = style['checkbox-active']['bg-color']
+                    box['activeforeground'] = style['checkbox-active']['text-color']
+
+                if('font' in cbox_style):
+                    font = cbox_style['font']
+                    btn.config(font=(font['font'], font['font-size']))
+                    btn.config(font=(font['font'], font['font-size'], font['font-style']))
             except:
                 print('')
 
             box.place(x=obj['x'], y=obj['y'], anchor="center")
-        
-        def label(obj):
-            lbl = Label()
+
+        def textbox(obj, master):
+            box = Entry(master)
+            box['width'] = obj['width']
+
+            box.bind('<Return>', partial(self.onSelect, obj))
+            box.place(x=obj['x'], y=obj['y'], anchor="center")
+
+        def label(obj, master):
+            lbl = Label(master)
             lbl['text'] = obj['text']
             lbl['width'] = obj['width']
             lbl['height'] = obj['height']
 
             #style
             try:
-                lbl['bg'] = style['label']['bg-color']
-                lbl['fg'] = style['label']['text-color']
+                lbl_style = style['label']
+                if('label' in style):
+                    lbl['bg'] = lbl_style['bg-color']
+                    lbl['fg'] = lbl_style['text-color']
+
+                if('label-hover' in style):
+                    hover = style['label-hover']
+                    lbl.bind("<Enter>", partial(self.hoverEvent, lbl, [lbl_style['bg-color'], hover['text-color']]))
+                    lbl.bind("<Leave>", partial(self.hoverEvent, lbl, [lbl_style['bg-color'], lbl_style['text-color']]))
+
+                if('font' in style['label']):
+                    font = lbl_style['font']
+                    lbl.config(font=(font['font'], font['font-size']))
+                    lbl.config(font=(font['font'], font['font-size'], font['font-style']))
             except:
                 print('')
 
             lbl.place(x=obj['x'], y=obj['y'], anchor="center")
         
-        def combo_box(obj):
-            box = ttk.Combobox(self.root)
+        def combo_box(obj, master):
+            box = ttk.Combobox(master)
             box['values'] = obj['values']
             box['width'] = obj['width']
             box['height'] = obj['height']
@@ -89,28 +136,55 @@ class window:
             box.bind('<<ComboboxSelected>>', partial(self.onSelect, obj))
             box.current(obj['default'])
             box.place(x=obj['x'], y=obj['y'], anchor="center")
+
+        def menu(obj, master):
+            print("Creating menu...")
+            menu = Menu(master)
+            for sub in obj['elements']:
+                submenu = Menu(menu)
+                for item in sub['elements']:
+                    if(item['type'] == 'command'):
+                        submenu.add_command(label=item['text'], command=partial(self.onClick, item)) 
+                    elif(item['type'] == 'separator'):
+                        submenu.add_separator()
+         
+                menu.add_cascade(label=sub['text'], menu=submenu)
+
+            self.root.config(menu=menu)
+
     
     # ================== object constructor ===================
+        def construct_obj(obj, master):
+            try: 
+                types = {
+                    'button': button,
+                    'checkbox': checkbox,
+                    'label': label,
+                    'combobox': combo_box,
+                    'textbox': textbox,
+                    'menu': menu
+                }
+                # look at the objects type
+                create = types.get(obj['tag'])
+                create(obj, master)
+            except:
+                print('Invalid tag given')
+
         for obj in elements:
-            types = {
-                'button': button,
-                'checkbox': checkbox,
-                'label': label,
-                'combobox': combo_box
-            }
-            # look at the objects type
-            create = types.get(obj['tag'])
-            create(obj)
+            construct_obj(obj, self.root)
         
     # ====================== bind keys ========================
         for key in keyBinds:
-            self.root.bind(key['key'], partial(self.onKeyPress, key))
+            try:
+                self.root.bind(key['key'], partial(self.onKeyPress, key))
+            except:
+                print(f"Could not bind key {key['key']}")
 
         # start the main loop
         self.root.mainloop()
     
     # ==================== event functions ====================
-    def onClick(self, obj, extra = None):
+    def onClick(self, obj, extra=None):
         if extra:
             print(f"{obj['id']}<{extra.get()}>")
 
@@ -120,6 +194,9 @@ class window:
             print(f"{obj['id']}<{event.widget.get()}>")
     def onKeyPress(self, key, event):
          print(f"{key['id']}<{event.keysym}>")
+
+    def hoverEvent(self, btn, colors, event=None):
+        btn.configure(bg=colors[0], fg=colors[1])
 
 
 #© Copyright Rick Lugtigheid

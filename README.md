@@ -28,11 +28,12 @@ when you have done this you need to create a window object and add elements to i
 const {createElement, createWindow} = require("node_ui.build");
 
 //create the window
-let win = createWindow(100, 100, "test window");
+let win = createWindow(100, 100, "test window"/*, require('./style.json')*/);
 
 //add elements to the window
 win.addElement(
-    createElement('label', {x: win.width/2, y: win.width/2, heigth: 2, width: 8, text: "Hello world"})
+    //we dont want to use the callback so we set it to null
+    createElement('label', null, x=win.width/2, y=win.width/2, heigth=2, width=8, text="Hello world")
 );
 
 //show the window
@@ -44,8 +45,44 @@ win.run();
 
 
 ## Version Log
-| Version  | added |
-| ------------- | ------------- |
-| [v0.0.1]      | Window, (button and label)Elements |
-| [v0.0.2]      | Window events (onUpdate, key binding), checkbox Element, stylesheet-V1 |
-----
+[changed added removed fixed improved]
+
+## v0.0.3
+
+### Added
+- window.createMenu
+- menu and textbox elements
+    - textbox.onReturn
+    - menu.createSubmenu
+    - menu.createItem
+- stylesheet
+    - -hover and -active events
+    - style Schema
+
+### Changed
+- createElement
+    - options from {options} to ...options
+
+### Improved
+- error checking
+- @params and comments on the functions
+
+## v0.0.2
+
+### Added
+- window.onUpdate
+- window.bindKey
+- checkbox element
+    - checkbox.onClick
+- Stylesheet V1
+
+## v0.0.1
+
+### Added
+- createWindow
+    - window.close
+    - window.onClose
+- createElement
+- button, label and combobox elements
+    - button.onClick
+    - combobox.onChange

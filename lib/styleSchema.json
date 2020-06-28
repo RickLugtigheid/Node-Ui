@@ -1,0 +1,136 @@
+{    
+    "$schema": "http://json-schema.org/draft-07/schema",
+    "$id": "http://example.com/root.json",
+    "type": "object",
+    "properties": {
+        "window":{
+            "type": "object",
+            "properties": {
+                "icon": {
+                    "type": "string",
+                    "default": "./path/icon.ico"
+                },
+                "bg-color": {
+                    "$ref": "#/definitions/color"
+                }
+            }
+        },
+        "button":{
+            "$ref": "#/definitions/element"
+        },
+        "button-active":{
+            "$ref": "#/definitions/element"
+        },
+        "button-hover":{
+            "$ref": "#/definitions/element"
+        },
+
+        "label":{
+            "$ref": "#/definitions/element"
+        },
+        "label-hover":{
+            "$ref": "#/definitions/element"
+        },
+        
+        "checkbox":{
+            "$ref": "#/definitions/element"
+        },
+        "checkbox-active":{
+            "$ref": "#/definitions/element"
+        },
+        "checkbox-hover":{
+            "$ref": "#/definitions/element"
+        }
+    },
+    "definitions":{
+        "element":{
+            "type": "object",
+            "properties": {
+                "bg-color": {
+                    "$ref": "#/definitions/color"
+                },
+                "text-color": {
+                    "$ref": "#/definitions/color"
+                },
+                "font": {
+                    "type": "object",
+                    "properties": {
+                        "font-size": {
+                            "type":"number"
+                        }, 
+                        "font-style": {
+                            "type":"string",
+                            "default": "none",
+                            "examples": [
+                                "bold",
+                                "italic",
+                                "bold italic"
+                            ]
+                        },
+                        "font": {
+                            "type":"string",
+                            "default": "Arial",
+                            "examples": [
+                                "System", 
+                                "Terminal", 
+                                "Fixedsys", 
+                                "Modern", 
+                                "Roman", 
+                                "Script", 
+                                "Courier", 
+                                "MS Serif", 
+                                "MS Sans Serif", 
+                                "Small Fonts", 
+                                "Source Sans Pro Black", 
+                                "Opus Chords Std",
+                                 "Marlett", 
+                                "Arial", 
+                                "Arabic Transparent", 
+                                "Arial Black", 
+                                "Bahnschrift Light", 
+                                "Bahnschrift SemiLight", 
+                                "Bahnschrift", 
+                                "Bahnschrift SemiBold",   
+                                "Calibri", 
+                                "Calibri Light", 
+                                "Cambria", 
+                                "Cambria Math", 
+                                "Candara",
+                                "Candara Light", 
+                                "Comic Sans MS", 
+                                "Consolas", "Constantia", 
+                                "Corbel", 
+                                "Corbel Light", 
+                                "Courier New", 
+                                "MS Gothic", 
+                                "Myanmar Text", 
+                                "Symbol", 
+                                "Tahoma", 
+                                "Times New Roman", 
+                                "Yu Gothic",  
+                                "HoloLens MDL2 Assets", 
+                                "Lato"
+                            ]
+                        }
+                    }
+                }
+            }
+        },
+        "color": {
+            "type": "string",
+            "default": "#000000",
+            "examples": [
+                "red",
+                "blue",
+                "green",
+                "yellow",
+                "pink",
+                "gold",
+                "silver",
+                "gray",
+                "black",
+                "white"
+            ]
+        }
+    }
+}
