@@ -16,20 +16,28 @@ sys.stdout = os.fdopen(sys.stdout.fileno(), 'a+', buf_arg)
 sys.stderr = os.fdopen(sys.stderr.fileno(), 'a+', buf_arg)
 # =========================================================
 elements = json.loads(sys.argv[1])
-keyBinds = json.loads(sys.argv[2])
-style = json.loads(sys.argv[3])
 window_settings = elements[0] # the fist element is always the window
+keyBinds = json.loads(sys.argv[2])
+style = window_settings['stylesheet']# json.loads(sys.argv[3])
 #delete the window from the elements
 elements.pop(0)
 class window:
     def __init__(self):
+        print(window_settings)
         self.root = Tk()
         # ====== windows settings =======
         try:
-            self.root.configure(bg=style['window']['bg-color'])
-            self.root.iconbitmap(style['window']['icon'])
+            if not window_settings['resize']:
+                self.root.resizable(False, False)
+                
+            if 'icon' in style['window']:
+                self.root.iconbitmap(style['window']['icon'])
+            
+            if 'bg-color' in style['window']:
+                self.root.configure(bg=style['window']['bg-color'])
         except:
-            print('')
+            print(None)
+        
         self.root.title(window_settings['title'])
         transform = f"{window_settings['width']}x{window_settings['height']}"
         self.root.geometry(transform)
@@ -41,7 +49,7 @@ class window:
             btn['height'] = obj['height']
             btn['text'] = obj['name']
 
-            btn['command'] = partial(self.onClick, obj)
+            btn['command'] = partial(self.onClick, obj['id']['click'])
             #style
             try:
                 btn_style = style['button']
@@ -64,14 +72,14 @@ class window:
                     btn.config(font=(font['font'], font['font-size']))
                     btn.config(font=(font['font'], font['font-size'], font['font-style']))
             except:
-                print('')
+                print(None)
 
             btn.place(x=obj['x'], y=obj['y'], anchor="center")
         
         def checkbox(obj, master):
             state = IntVar()
             box = Checkbutton(master, text=obj['name'], height=obj['height'], variable=state)
-            box['command'] = partial(self.onClick, obj, state)
+            box['command'] = partial(self.onClick, obj['id']['click'], state)
 
             #style
             try:
@@ -89,7 +97,7 @@ class window:
                     btn.config(font=(font['font'], font['font-size']))
                     btn.config(font=(font['font'], font['font-size'], font['font-style']))
             except:
-                print('')
+                print(None)
 
             box.place(x=obj['x'], y=obj['y'], anchor="center")
 
@@ -97,15 +105,16 @@ class window:
             box = Entry(master)
             box['width'] = obj['width']
 
-            box.bind('<Return>', partial(self.onSelect, obj))
+            box.bind('<Return>', partial(self.onSelect, obj['id']['retrun']))
+            box.bind("<KeyRelease>", partial(self.onSelect, obj['id']['change']))
+            print(obj)
+            if obj['hidden'] is True:
+                box.config(show="*")
+
             box.place(x=obj['x'], y=obj['y'], anchor="center")
 
         def label(obj, master):
-            lbl = Label(master)
-            lbl['text'] = obj['text']
-            lbl['width'] = obj['width']
-            lbl['height'] = obj['height']
-
+            lbl = Label(master, text=obj['text'], width=obj['width'], height=obj['height'])
             #style
             try:
                 lbl_style = style['label']
@@ -123,18 +132,30 @@ class window:
                     lbl.config(font=(font['font'], font['font-size']))
                     lbl.config(font=(font['font'], font['font-size'], font['font-style']))
             except:
-                print('')
-
+                print(None)
+            
+            # Use pixels as size
             lbl.place(x=obj['x'], y=obj['y'], anchor="center")
         
         def combo_box(obj, master):
             box = ttk.Combobox(master)
-            box['values'] = obj['values']
+            box['values'] = obj['items']
             box['width'] = obj['width']
             box['height'] = obj['height']
 
-            box.bind('<<ComboboxSelected>>', partial(self.onSelect, obj))
-            box.current(obj['default'])
+            if 'change' in obj['id']:
+                box.bind('<<ComboboxSelected>>', partial(self.onSelect, obj['id']['select']))
+            box.current(obj['startIndex'])
+            box.place(x=obj['x'], y=obj['y'], anchor="center")
+
+        def listbox(obj, master):
+            box = Listbox(master, selectmode=EXTENDED)
+            for i in range(0, len(obj['items'])): 
+                box.insert(i, obj['items'][i])
+
+            if 'select' in obj['id']:
+                # box.bind('<<ListboxSelect>>', partial(self.onClick, obj['id']['select'], box.curselection()))
+                box.bind('<Double-1>', lambda e: print(f"{obj['id']['select']}<{box.selection_get()}>"))
             box.place(x=obj['x'], y=obj['y'], anchor="center")
 
         def menu(obj, master):
@@ -144,7 +165,7 @@ class window:
                 submenu = Menu(menu)
                 for item in sub['elements']:
                     if(item['type'] == 'command'):
-                        submenu.add_command(label=item['text'], command=partial(self.onClick, item)) 
+                        submenu.add_command(label=item['text'], command=partial(self.onClick, obj['id'])) 
                     elif(item['type'] == 'separator'):
                         submenu.add_separator()
          
@@ -161,6 +182,7 @@ class window:
                     'checkbox': checkbox,
                     'label': label,
                     'combobox': combo_box,
+                    'listbox': listbox,
                     'textbox': textbox,
                     'menu': menu
                 }
@@ -172,7 +194,7 @@ class window:
 
         for obj in elements:
             construct_obj(obj, self.root)
-        
+       
     # ====================== bind keys ========================
         for key in keyBinds:
             try:
@@ -184,20 +206,21 @@ class window:
         self.root.mainloop()
     
     # ==================== event functions ====================
-    def onClick(self, obj, extra=None):
+    def onClick(self, id, extra=None):
         if extra:
-            print(f"{obj['id']}<{extra.get()}>")
+            print(f"{id}<{extra.get()}>")
 
-        print(obj['id'])
-    def onSelect(self, obj, event=None):
+        print(id)
+    def onSelect(self, id, event=None):
         if event:
-            print(f"{obj['id']}<{event.widget.get()}>")
+            print(f"{id}<{event.widget.get()}>")
+        
+        print(id)
     def onKeyPress(self, key, event):
          print(f"{key['id']}<{event.keysym}>")
 
     def hoverEvent(self, btn, colors, event=None):
         btn.configure(bg=colors[0], fg=colors[1])
-
 
 #© Copyright Rick Lugtigheid
 if __name__ == '__main__':

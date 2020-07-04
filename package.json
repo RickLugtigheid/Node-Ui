@@ -1,15 +1,21 @@
 {
   "name": "node_ui.build",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "A python based GUI builder",
   "main": "./lib/nodeUi.js",
   "directories": {
     "lib": "lib"
   },
+  "scripts": {
+    "init": "echo ---[ Creating framework ]--- && node ./lib/framework/init"
+  },
   "keywords": [
-    "gui",
+    "GUI",
     "node ui",
-    "ui"
+    "UI",
+    "python",
+    "desktop",
+    "framework"
   ],
   "author": "Rick Lugtgheid",
   "homepage": "https://github.com/RickLugtigheid/Node-Ui",

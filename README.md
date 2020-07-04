@@ -1,6 +1,6 @@
 # Node Ui
 [![module version](https://img.shields.io/npm/v/node_ui.build)](#version-log)
-[![downloads](https://img.shields.io/npm/dm/node_ui.build)](https://www.npmjs.com/package/@rick_lugtigheid/js_utils)
+[![downloads](https://img.shields.io/npm/dm/node_ui.build)](https://www.npmjs.com/package/node_ui.build)
 [![last comit](https://img.shields.io/github/last-commit/RickLugtigheid/Node-Ui)](https://github.com/RickLugtigheid/Node-Ui/commits/master)
 [![size](https://img.shields.io/github/repo-size/RickLugtigheid/Node-Ui)]()
 
@@ -38,6 +38,17 @@ win.addElement(
 
 //show the window
 win.run();
+//or win.run({'resizable': false});
+```
+
+## Initializing framework
+Run this command to install the [framework](https://github.com/RickLugtigheid/Node-Ui/wiki).
+```bash
+$ npm explore node_ui.build -- npm run init
+```
+Add router file to package.json
+```json
+  "router": "router.js",
 ```
 
 ## Documentation
@@ -46,6 +57,43 @@ win.run();
 
 ## Version Log
 [changed added removed fixed improved]
+
+## v0.0.4
+
+### Added
+- textbox option: hidden
+- listbox element
+    - onSelect
+    - items
+- framework
+    - render [function]
+    - router [class]
+        - .GET
+        - .SET
+    - router file
+        - init()
+        - get routes()
+        - get public()
+        - core: new router
+    - window file
+        - window: createWindow(*Options*)
+        - run_settings: {'resizable': false},
+        - init(...params)
+        - get elements()
+        - *optional* onClose()
+    - init command
+- window run options
+    - resizable
+- Math.pct()
+
+### Changed
+- combobox
+    - values to items
+    - onChange to onSelect
+
+### Fixed
+- spelling error in textbox.onReturn
+- support for multiple events per element
 
 ## v0.0.3
 

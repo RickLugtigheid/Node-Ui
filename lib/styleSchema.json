@@ -37,9 +37,6 @@
         },
         "checkbox-active":{
             "$ref": "#/definitions/element"
-        },
-        "checkbox-hover":{
-            "$ref": "#/definitions/element"
         }
     },
     "definitions":{
@@ -83,8 +80,7 @@
                                 "Small Fonts", 
                                 "Source Sans Pro Black", 
                                 "Opus Chords Std",
-                                 "Marlett", 
-                                "Arial", 
+                                "Marlett", 
                                 "Arabic Transparent", 
                                 "Arial Black", 
                                 "Bahnschrift Light", 
