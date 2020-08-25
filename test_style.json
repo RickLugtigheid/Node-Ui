@@ -1,0 +1,11 @@
+{
+    "$schema": "./lib/styleSchema.json",
+    "window": {
+        "bg-color": "turquoise"
+    },
+    "textbox": {
+        "font": {
+            "font-color": "red"
+        }
+    }
+}

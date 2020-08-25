@@ -37,6 +37,13 @@
         },
         "checkbox-active":{
             "$ref": "#/definitions/element"
+        },
+
+        "textbox":{
+            "$ref": "#/definitions/element"
+        },
+        "textbox-active":{
+            "$ref": "#/definitions/element"
         }
     },
     "definitions":{
@@ -46,12 +53,12 @@
                 "bg-color": {
                     "$ref": "#/definitions/color"
                 },
-                "text-color": {
-                    "$ref": "#/definitions/color"
-                },
                 "font": {
                     "type": "object",
                     "properties": {
+                        "font-color": {
+                            "$ref": "#/definitions/color"
+                        },
                         "font-size": {
                             "type":"number"
                         }, 
@@ -119,13 +126,23 @@
                 "red",
                 "blue",
                 "green",
+                "cyan",
+                "turquoise",
+                "orange",
+                "salmon",
                 "yellow",
                 "pink",
+                "violet",
+                "purple",
                 "gold",
                 "silver",
                 "gray",
                 "black",
-                "white"
+                "white",
+                "snow",
+                "white smoke",
+                "bisque",
+                "azure"
             ]
         }
     }

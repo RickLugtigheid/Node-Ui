@@ -1,0 +1,15 @@
+{
+    "$schema": "./lib/styleSchema.json",
+    "window": {
+        "bg-color": "#000000"
+    },
+    "label": {
+        "bg-color": "#000000",
+        "font": {
+            "font-color": "white",
+            "font-style": "bold",
+            "font-size": 16,
+            "font": "Arial"
+        }
+    }
+}

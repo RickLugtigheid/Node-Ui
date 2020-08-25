@@ -55,17 +55,17 @@ class window:
                 btn_style = style['button']
                 if('button' in style):
                     btn['bg'] = btn_style['bg-color']
-                    btn['fg'] = btn_style['text-color']
+                    btn['fg'] = btn_style['font']['font-color']
 
                 if('button-active' in style):
                     btn['activebackground'] = style['button-active']['bg-color']
-                    btn['activeforeground'] = style['button-active']['text-color']
+                    btn['activeforeground'] = style['button-active']['font']['font-color']
                 
                 
                 if('button-hover' in style):
                     hover = style['button-hover']
-                    btn.bind("<Enter>", partial(self.hoverEvent, btn, [hover['bg-color'], hover['text-color']]))
-                    btn.bind("<Leave>", partial(self.hoverEvent, btn, [btn_style['bg-color'], btn_style['text-color']]))
+                    btn.bind("<Enter>", partial(self.hoverEvent, btn, [hover['bg-color'], hover['font']['font-color']]))
+                    btn.bind("<Leave>", partial(self.hoverEvent, btn, [btn_style['bg-color'], btn_style['font']['font-color']]))
 
                 if('font' in btn_style):
                     font = btn_style['font']
@@ -86,11 +86,11 @@ class window:
                 cbox_style = style['checkbox']
                 if('checkbox' in style):
                     box['bg'] = cbox_style['bg-color']
-                    box['fg'] = cbox_style['text-color']
+                    box['fg'] = cbox_style['font']['font-color']
 
                 if('checkbox-active' in style):
                     box['activebackground'] = style['checkbox-active']['bg-color']
-                    box['activeforeground'] = style['checkbox-active']['text-color']
+                    box['activeforeground'] = style['checkbox-active']['font']['font-color']
 
                 if('font' in cbox_style):
                     font = cbox_style['font']
@@ -105,27 +105,47 @@ class window:
             box = Entry(master)
             box['width'] = obj['width']
 
-            box.bind('<Return>', partial(self.onSelect, obj['id']['retrun']))
-            box.bind("<KeyRelease>", partial(self.onSelect, obj['id']['change']))
+            if 'retrun' in obj['id']:
+                box.bind('<Return>', partial(self.onSelect, obj['id']['retrun']))
+            if 'change' in obj['id']:
+                box.bind("<KeyRelease>", partial(self.onSelect, obj['id']['change']))
             print(obj)
             if obj['hidden'] is True:
                 box.config(show="*")
 
+            #style
+            try:
+                tbox_style = style['textbox']
+                if('textbox' in style):
+                    box['bg'] = tbox_style['bg-color']
+                    box['fg'] = tbox_style['font']['font-color']
+
+                if('textbox-active' in style):
+                    box['activebackground'] = style['textbox-active']['bg-color']
+                    box['activeforeground'] = style['textbox-active']['font']['font-color']
+
+                if('font' in tbox_style):
+                    font = tbox_style['font']
+                    btn.config(font=(font['font'], font['font-size']))
+                    btn.config(font=(font['font'], font['font-size'], font['font-style']))
+            except:
+                print(None)
+
             box.place(x=obj['x'], y=obj['y'], anchor="center")
 
         def label(obj, master):
-            lbl = Label(master, text=obj['text'], width=obj['width'], height=obj['height'])
+            lbl = Label(master, text=obj['text'], width=obj['width'], height=obj['height'], wraplength=obj['width'] * 7)
             #style
             try:
                 lbl_style = style['label']
                 if('label' in style):
                     lbl['bg'] = lbl_style['bg-color']
-                    lbl['fg'] = lbl_style['text-color']
+                    lbl['fg'] = lbl_style['font']['font-color']
 
                 if('label-hover' in style):
                     hover = style['label-hover']
-                    lbl.bind("<Enter>", partial(self.hoverEvent, lbl, [lbl_style['bg-color'], hover['text-color']]))
-                    lbl.bind("<Leave>", partial(self.hoverEvent, lbl, [lbl_style['bg-color'], lbl_style['text-color']]))
+                    lbl.bind("<Enter>", partial(self.hoverEvent, lbl, [lbl_style['bg-color'], hover['font']['font-color']]))
+                    lbl.bind("<Leave>", partial(self.hoverEvent, lbl, [lbl_style['bg-color'], lbl_style['font']['font-color']]))
 
                 if('font' in style['label']):
                     font = lbl_style['font']
@@ -165,7 +185,7 @@ class window:
                 submenu = Menu(menu)
                 for item in sub['elements']:
                     if(item['type'] == 'command'):
-                        submenu.add_command(label=item['text'], command=partial(self.onClick, obj['id'])) 
+                        submenu.add_command(label=item['text'], command=partial(self.onClick, item['id'])) 
                     elif(item['type'] == 'separator'):
                         submenu.add_separator()
          
@@ -190,7 +210,7 @@ class window:
                 create = types.get(obj['tag'])
                 create(obj, master)
             except:
-                print('Invalid tag given')
+                print('Error when creating elements')
 
         for obj in elements:
             construct_obj(obj, self.root)

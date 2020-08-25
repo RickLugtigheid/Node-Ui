@@ -56,9 +56,22 @@ Add router file to package.json
 
 
 ## Version Log
-[changed added removed fixed improved]
 
-## v0.0.4
+## v0.0.6
+
+### Added
+- label text wrap
+- textbox style
+- "enums" for selecting elements and keys to bind (the old way of doing it still works)
+
+### Changed
+- text-color is now under font (in a stylesheet)
+
+### Fixed
+- textbox not showing bug
+- menu not showing bug
+
+## v0.0.4 / v0.0.5
 
 ### Added
 - textbox option: hidden
@@ -92,6 +105,7 @@ Add router file to package.json
     - onChange to onSelect
 
 ### Fixed
+- v0.0.4 bug that broke the module
 - spelling error in textbox.onReturn
 - support for multiple events per element
 
